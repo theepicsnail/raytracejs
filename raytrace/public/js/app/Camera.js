@@ -9,7 +9,7 @@ define([], function() {
     this.resolution = resolution;
     this.spacing = this.width / resolution;
     this.focalLength = focalLength || 0.8;
-    this.range = 14;
+    this.range = 25;
     this.lightRange = 5;
     this.scale = (this.width + this.height) / 1200;
   }
@@ -17,7 +17,7 @@ define([], function() {
   Camera.prototype.render = function(player, map) {
     this.drawSky(player.direction, map.skybox, map.light);
     this.drawColumns(player, map);
-    this.drawWeapon(player.weapon, player.paces);
+    // this.drawWeapon(player.weapon, player.paces);
   };
 
   Camera.prototype.drawSky = function(direction, sky, ambient) {
@@ -32,7 +32,7 @@ define([], function() {
     if (ambient > 0) {
       this.ctx.fillStyle = '#ffffff';
       this.ctx.globalAlpha = ambient * 0.1;
-      this.ctx.fillRect(0, this.height * 0.5, this.width, this.height * 0.5);
+    //  this.ctx.fillRect(0, this.height * 0.5, this.width, this.height * 0.5);
     }
     this.ctx.restore();
   };
@@ -67,8 +67,8 @@ define([], function() {
 
     for (var s = ray.length - 1; s >= 0; s--) {
       var step = ray[s];
-      var rainDrops = Math.pow(Math.random(), 3) * s;
-      var rain = (rainDrops > 0) && this.project(0.1, angle, step.distance);
+      //var rainDrops = Math.pow(Math.random(), 3) * s;
+      //var rain = (rainDrops > 0) && this.project(0.1, angle, step.distance);
 
       if (s === hit) {
         var textureX = Math.floor(texture.width * step.offset);
@@ -77,14 +77,14 @@ define([], function() {
         ctx.globalAlpha = 1;
         ctx.drawImage(texture.image, textureX, 0, 1, texture.height, left, wall.top, width, wall.height);
 
-        ctx.fillStyle = '#000000';
-        ctx.globalAlpha = Math.max((step.distance + step.shading) / this.lightRange - map.light, 0);
-        ctx.fillRect(left, wall.top, width, wall.height);
+        //ctx.fillStyle = '#000000';
+        //ctx.globalAlpha = Math.max((step.distance + step.shading) / this.lightRange - map.light, 0);
+        //ctx.fillRect(left, wall.top, width, wall.height);
       }
 
-      ctx.fillStyle = '#ffffff';
-      ctx.globalAlpha = 0.15;
-      while (--rainDrops > 0) ctx.fillRect(left, Math.random() * rain.top, 1, rain.height);
+      //ctx.fillStyle = '#ffffff';
+      //ctx.globalAlpha = 0.15;
+      //while (--rainDrops > 0) ctx.fillRect(left, Math.random() * rain.top, 1, rain.height);
     }
   };
 
