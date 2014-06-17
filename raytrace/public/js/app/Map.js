@@ -4,7 +4,7 @@ define(["app/Bitmap"], function(Bitmap) {
     this.wallGrid = new Uint8Array(size * size);
     this.skybox = new Bitmap('./assets/deathvalley_panorama.jpg', 2000, 750);
     //this.wallTexture = new Bitmap('./assets/wall_texture.jpg', 1024, 1024);
-    this.wallTexture = new Bitmap('./assets/minecraft/textures/blocks/door_iron_upper.png', 16,16);
+    this.wallTexture = new Bitmap('./assets/wall.png', 16,16);
     this.light = 0;
   }
 
@@ -19,11 +19,27 @@ define(["app/Bitmap"], function(Bitmap) {
 //    for (var i = 0; i < this.size * this.size; i++) {
 //      this.wallGrid[i] = Math.random() < 0.3 ? 1 : 0;
 //    }
+    var data = [
+      "xxxxxxxxxxxxxxxx",
+      "x              x",
+      "x xxxxx  xxxxx x",
+      "x x          x x",
+      "x x xxxxxxxx x x",
+      "x x x      x x x",
+      "x x x      x x x",
+      "x x    xx    x x",
+      "x x    xx    x x",
+      "x x x      x x x",
+      "x x x      x x x",
+      "x x xxxxxxxx x x",
+      "x x          x x",
+      "x xxxxx  xxxxx x",
+      "x              x",
+      "xxxxxxxxxxxxxxxx",
+    ];
     for (var i = 0 ; i < this.size ; i ++)
     for (var j = 0 ; j < this.size ; j ++) {
-      this.wallGrid[i*this.size + j] = (
-        i === 0 || j ===0 || i === this.size - 1 || j === this.size - 1
-      );
+      this.wallGrid[i*this.size + j] = data[i][j] !== ' ';
     }
   };
 
