@@ -51,21 +51,32 @@ define(["app/Bitmap"], function(Bitmap) {
   };
 
   Map.prototype.ray = function(origin, dx, dy) {
-    var stepX = this.step(dy, dx, origin.x, origin.y);
-    var stepY = this.step(dx, dy, origin.y, origin.x, true);
-    var nextStep = stepX.length2 < stepY.length2
-      ? this.inspect(stepX, dx,dy,1, 0, origin.distance, stepX.y)
-      : this.inspect(stepY, dx,dy,0, 1, origin.distance, stepY.x);
-    if(Math.floor(nextStep.x) == 7 && Math.floor(nextStep.y) == 7)
-    {
-      if (nextStep.x == 7 && dx >0) {
-        nextStep.y -= 6;
-        nextStep.x -= 6;
-        return this.ray(nextStep, dx, dy);
+    var casting = true;
+    var result = [];
+    while(casting) {
+      var stepX = this.step(dy, dx, origin.x, origin.y);
+      var stepY = this.step(dx, dy, origin.y, origin.x, true);
+      var nextStep = stepX.length2 < stepY.length2
+        ? this.inspect(stepX, dx,dy,1, 0, origin.distance, stepX.y)
+        : this.inspect(stepY, dx,dy,0, 1, origin.distance, stepY.x);
+      if(Math.floor(nextStep.x) == 7 && Math.floor(nextStep.y) == 7)
+      {
+        if (nextStep.x == 7 && dx >0) {
+          nextStep.y -= 6;
+          nextStep.x -= 6;
+          origin = nextStep;
+          continue;
+        }
       }
+
+      result.push(origin);
+
+      if (nextStep.distance > this.range)
+        casting = false;
+      else
+        origin = nextStep;
     }
-    if (nextStep.distance > this.range) return [origin];
-    return [origin].concat(this.ray(nextStep, dx, dy));
+    return result;
   };
 
 
