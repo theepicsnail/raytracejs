@@ -16,9 +16,9 @@ define(["app/Bitmap"], function(Bitmap) {
   };
 
   Map.prototype.randomize = function() {
-//    for (var i = 0; i < this.size * this.size; i++) {
-//      this.wallGrid[i] = Math.random() < 0.3 ? 1 : 0;
-//    }
+    //    for (var i = 0; i < this.size * this.size; i++) {
+    //      this.wallGrid[i] = Math.random() < 0.3 ? 1 : 0;
+    //    }
     var data = [
       "xxxxxxxxxxxxxxxx",
       "x              x",
@@ -36,61 +36,60 @@ define(["app/Bitmap"], function(Bitmap) {
       "x              x",
       "x              x",
       "xxxxxxxxxxxxxxxx",
-    ];
+      ];
     for (var i = 0 ; i < this.size ; i ++)
-    for (var j = 0 ; j < this.size ; j ++) {
-      this.wallGrid[i*this.size + j] = data[i][j] !== ' ';
-    }
+      for (var j = 0 ; j < this.size ; j ++) {
+        this.wallGrid[i*this.size + j] = data[i][j] !== ' ';
+      }
   };
 
   Map.prototype.cast = function(point, angle, range) {
-    var self = this;
     var sin = Math.sin(angle);
     var cos = Math.cos(angle);
-    var noWall = { length2: Infinity };
+    this.range = range;
+    return this.ray({ x: point.x, y: point.y, height: 0, distance: 0 }, cos, sin);
+  };
 
-    return ray({ x: point.x, y: point.y, height: 0, distance: 0 }, cos, sin);
-
-    function ray(origin, dx, dy) {
-      var stepX = step(dy, dx, origin.x, origin.y);
-      var stepY = step(dx, dy, origin.y, origin.x, true);
-      var nextStep = stepX.length2 < stepY.length2
-        ? inspect(stepX, dx,dy,1, 0, origin.distance, stepX.y)
-        : inspect(stepY, dx,dy,0, 1, origin.distance, stepY.x);
-      if(Math.floor(nextStep.x) == 7 && Math.floor(nextStep.y) == 7)
-      {
-        if (nextStep.x == 7 && dx >0) {
-          nextStep.y -= 6;
-          nextStep.x -= 6;
-          return ray(nextStep, dx, dy);
-        }
-//        return ray(nextStep, dx, dy);
+  Map.prototype.ray = function(origin, dx, dy) {
+    var stepX = this.step(dy, dx, origin.x, origin.y);
+    var stepY = this.step(dx, dy, origin.y, origin.x, true);
+    var nextStep = stepX.length2 < stepY.length2
+      ? this.inspect(stepX, dx,dy,1, 0, origin.distance, stepX.y)
+      : this.inspect(stepY, dx,dy,0, 1, origin.distance, stepY.x);
+    if(Math.floor(nextStep.x) == 7 && Math.floor(nextStep.y) == 7)
+    {
+      if (nextStep.x == 7 && dx >0) {
+        nextStep.y -= 6;
+        nextStep.x -= 6;
+        return this.ray(nextStep, dx, dy);
       }
-      if (nextStep.distance > range) return [origin];
-      return [origin].concat(ray(nextStep, dx, dy));
     }
+    if (nextStep.distance > this.range) return [origin];
+    return [origin].concat(this.ray(nextStep, dx, dy));
+  };
 
-    function step(rise, run, x, y, inverted) {
-      if (run === 0) return noWall;
-      var dx = run > 0 ? Math.floor(x + 1) - x : Math.ceil(x - 1) - x;
-      var dy = dx * (rise / run);
-      return {
-        x: inverted ? y + dy : x + dx,
+
+
+  Map.prototype.step = function(rise, run, x, y, inverted) {
+    if (run === 0) return { length2: Infinity };
+    var dx = run > 0 ? Math.floor(x + 1) - x : Math.ceil(x - 1) - x;
+    var dy = dx * (rise / run);
+    return {
+      x: inverted ? y + dy : x + dx,
         y: inverted ? x + dx : y + dy,
         length2: dx * dx + dy * dy
-      };
-    }
+    };
+  };
 
-    function inspect(step,dx, dy, shiftX, shiftY, distance, offset) {
-      var dx = dx < 0 ? shiftX : 0;
-      var dy = dy < 0 ? shiftY : 0;
-      step.height = self.get(step.x - dx, step.y - dy);
-      step.distance = distance + Math.sqrt(step.length2);
-      if (shiftX) step.shading = dx < 0 ? 2 : 0;
-      else step.shading = dy < 0 ? 2 : 1;
-      step.offset = offset - Math.floor(offset);
-      return step;
-    }
+  Map.prototype.inspect = function(step,dx, dy, shiftX, shiftY, distance, offset) {
+    dx = dx < 0 ? shiftX : 0;
+    dy = dy < 0 ? shiftY : 0;
+    step.height = this.get(step.x - dx, step.y - dy);
+    step.distance = distance + Math.sqrt(step.length2);
+    if (shiftX) step.shading = dx < 0 ? 2 : 0;
+    else step.shading = dy < 0 ? 2 : 1;
+    step.offset = offset - Math.floor(offset);
+    return step;
   };
 
   Map.prototype.update = function(seconds) {
@@ -99,4 +98,4 @@ define(["app/Bitmap"], function(Bitmap) {
   };
 
   return Map;
-})
+});
