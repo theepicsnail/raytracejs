@@ -1,8 +1,18 @@
 define([], function() {
   function Controls() {
     console.log("Controls");
-    this.codes  = { 37: 'left', 39: 'right', 38: 'forward', 40: 'backward' };
-    this.states = { 'left': false, 'right': false, 'forward': false, 'backward': false };
+    this.codes  = {
+      65:'stepLeft',  // A
+      68:'stepRight', // D
+      83:'backward',  // S
+      87:'forward',   // W
+
+      37: 'left',
+      39: 'right',
+      38: 'forward',
+      40: 'backward'
+    };
+    this.states = { 'left': false, 'right': false, 'forward': false, 'backward': false, 'stepLeft':false, 'stepRight':false };
     document.addEventListener('keydown', this.onKey.bind(this, true), false);
     document.addEventListener('keyup', this.onKey.bind(this, false), false);
     document.addEventListener('touchstart', this.onTouch.bind(this), false);
@@ -19,13 +29,14 @@ define([], function() {
   };
 
   Controls.prototype.onTouchEnd = function(e) {
-    this.states = { 'left': false, 'right': false, 'forward': false, 'backward': false };
+    this.states = { 'left': false, 'right': false, 'forward': false, 'backward': false, 'stepLeft':false, 'stepRight': false};
     e.preventDefault();
     e.stopPropagation();
   };
 
   Controls.prototype.onKey = function(val, e) {
     var state = this.codes[e.keyCode];
+    console.log(e.keyCode);
     if (typeof state === 'undefined') return;
     this.states[state] = val;
     e.preventDefault && e.preventDefault();
