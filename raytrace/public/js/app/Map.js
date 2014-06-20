@@ -4,7 +4,7 @@ define(["app/Bitmap"], function(Bitmap) {
     this.wallGrid = new Uint8Array(size * size);
     this.skybox = new Bitmap('./assets/deathvalley_panorama.jpg', 2000, 750);
     //this.wallTexture = new Bitmap('./assets/wall_texture.jpg', 1024, 1024);
-    this.wallTexture = new Bitmap('./assets/wall.png', 16,16);
+    this.wallTexture = new Bitmap('./assets/wall.png', 32, 32);
     this.light = 0;
   }
 
@@ -22,18 +22,18 @@ define(["app/Bitmap"], function(Bitmap) {
     var data = [
       "xxxxxxxxxxxxxxxx",
       "x              x",
-      "x xxxxx  xxxxx x",
-      "x x          x x",
-      "x x xxxxxxxx x x",
-      "x x x      x x x",
-      "x x x      x x x",
-      "x x    xx    x x",
-      "x x    xx    x x",
-      "x x x      x x x",
-      "x x x      x x x",
-      "x x xxxxxxxx x x",
-      "x x          x x",
-      "x xxxxx  xxxxx x",
+      "x              x",
+      "x              x",
+      "x              x",
+      "x              x",
+      "x     x x      x",
+      "x       x      x",
+      "x     xxx      x",
+      "x              x",
+      "x              x",
+      "x              x",
+      "x              x",
+      "x              x",
       "x              x",
       "xxxxxxxxxxxxxxxx",
     ];
@@ -49,17 +49,25 @@ define(["app/Bitmap"], function(Bitmap) {
     var cos = Math.cos(angle);
     var noWall = { length2: Infinity };
 
-    return ray({ x: point.x, y: point.y, height: 0, distance: 0 });
+    return ray({ x: point.x, y: point.y, height: 0, distance: 0 }, cos, sin);
 
-    function ray(origin) {
-      var stepX = step(sin, cos, origin.x, origin.y);
-      var stepY = step(cos, sin, origin.y, origin.x, true);
+    function ray(origin, dx, dy) {
+      var stepX = step(dy, dx, origin.x, origin.y);
+      var stepY = step(dx, dy, origin.y, origin.x, true);
       var nextStep = stepX.length2 < stepY.length2
-        ? inspect(stepX, 1, 0, origin.distance, stepX.y)
-        : inspect(stepY, 0, 1, origin.distance, stepY.x);
-
+        ? inspect(stepX, dx,dy,1, 0, origin.distance, stepX.y)
+        : inspect(stepY, dx,dy,0, 1, origin.distance, stepY.x);
+      if(Math.floor(nextStep.x) == 7 && Math.floor(nextStep.y) == 7)
+      {
+        if (nextStep.x == 7 && dx >0) {
+          nextStep.y -= 6;
+          nextStep.x -= 6;
+          return ray(nextStep, dx, dy);
+        }
+//        return ray(nextStep, dx, dy);
+      }
       if (nextStep.distance > range) return [origin];
-      return [origin].concat(ray(nextStep));
+      return [origin].concat(ray(nextStep, dx, dy));
     }
 
     function step(rise, run, x, y, inverted) {
@@ -73,13 +81,13 @@ define(["app/Bitmap"], function(Bitmap) {
       };
     }
 
-    function inspect(step, shiftX, shiftY, distance, offset) {
-      var dx = cos < 0 ? shiftX : 0;
-      var dy = sin < 0 ? shiftY : 0;
+    function inspect(step,dx, dy, shiftX, shiftY, distance, offset) {
+      var dx = dx < 0 ? shiftX : 0;
+      var dy = dy < 0 ? shiftY : 0;
       step.height = self.get(step.x - dx, step.y - dy);
       step.distance = distance + Math.sqrt(step.length2);
-      if (shiftX) step.shading = cos < 0 ? 2 : 0;
-      else step.shading = sin < 0 ? 2 : 1;
+      if (shiftX) step.shading = dx < 0 ? 2 : 0;
+      else step.shading = dy < 0 ? 2 : 1;
       step.offset = offset - Math.floor(offset);
       return step;
     }
