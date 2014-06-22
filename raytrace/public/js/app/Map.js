@@ -1,4 +1,6 @@
-define(["app/Bitmap"], function(Bitmap) {
+define(["app/Bitmap", "app/Portal"], function(Bitmap, Portal) {
+//define(["app/Bitmap"], function(Bitmap) {
+
   function Map(size) {
     this.size = size;
     this.wallGrid = new Uint8Array(size * size);
@@ -6,7 +8,32 @@ define(["app/Bitmap"], function(Bitmap) {
     //this.wallTexture = new Bitmap('./assets/wall_texture.jpg', 1024, 1024);
     this.wallTexture = new Bitmap('./assets/wall.png', 32, 32);
     this.light = 0;
+    this.portals = [new Portal()];
+    this.portals[0].setEntrance(7, 7, 0);
+    this.portals[0].setExit(1, 1, 0);
+
   }
+
+  Map.prototype.move = function(x, y, dir, dist) {
+    // returns {x, y, dir}
+
+    var dx = Math.cos(dir) * dist;
+    var dy = Math.sin(dir) * dist;
+
+
+    if (this.get(x + dx, y) <= 0) x += dx;
+    if (this.get(x, y + dy) <= 0) y += dy;
+
+    if(this.portals[0].rayEnters(x, y, dx, dy))
+    {
+      return this.portals[0].cross(x, y, dir, dist);
+    }
+
+
+    return {
+      x:x, y:y, dir: dir
+    };
+  };
 
   Map.prototype.get = function(x, y) {
     x = Math.floor(x);
@@ -27,7 +54,7 @@ define(["app/Bitmap"], function(Bitmap) {
       "x              x",
       "x              x",
       "x     x x      x",
-      "x       x      x",
+      "x     x x      x",
       "x     xxx      x",
       "x              x",
       "x              x",
@@ -39,7 +66,7 @@ define(["app/Bitmap"], function(Bitmap) {
       ];
     for (var i = 0 ; i < this.size ; i ++)
       for (var j = 0 ; j < this.size ; j ++) {
-        this.wallGrid[i*this.size + j] = data[i][j] !== ' ';
+        this.wallGrid[i*this.size + j] = data[j][i] !== ' ';
       }
   };
 
@@ -47,18 +74,35 @@ define(["app/Bitmap"], function(Bitmap) {
     var sin = Math.sin(angle);
     var cos = Math.cos(angle);
     this.range = range;
-    return this.ray({ x: point.x, y: point.y, height: 0, distance: 0 }, cos, sin);
+    return this.ray({ x: point.x, y: point.y, height: 0, distance: 0 }, angle, cos, sin);
   };
 
-  Map.prototype.ray = function(origin, dx, dy) {
+  Map.prototype.ray = function(origin, dir, dx, dy) {
     var casting = true;
     var result = [];
     while(casting) {
       var stepX = this.step(dy, dx, origin.x, origin.y);
       var stepY = this.step(dx, dy, origin.y, origin.x, true);
-      var nextStep = stepX.length2 < stepY.length2
-        ? this.inspect(stepX, dx,dy,1, 0, origin.distance, stepX.y)
+      var nextStep = stepX.length2 < stepY.length2 ?
+        this.inspect(stepX, dx,dy,1, 0, origin.distance, stepX.y)
         : this.inspect(stepY, dx,dy,0, 1, origin.distance, stepY.x);
+
+
+      if(this.portals[0].rayEnters(nextStep.x, nextStep.y, dx, dy))
+      {
+        var end = this.portals[0].cross(nextStep.x, nextStep.y, dir, 0 );
+        nextStep.x = end.x;
+        nextStep.y = end.y;
+
+        //nextStep.x -= 6;
+        //nextStep.y -= 6;
+        dx = Math.cos(end.dir);
+        dy = Math.sin(end.dir);
+        origin = nextStep;
+        continue;
+      }
+
+/*
       if(Math.floor(nextStep.x) == 7 && Math.floor(nextStep.y) == 7)
       {
         if (nextStep.x == 7 && dx >0) {
@@ -68,7 +112,7 @@ define(["app/Bitmap"], function(Bitmap) {
           continue;
         }
       }
-
+*/
       result.push(origin);
 
       if (nextStep.distance > this.range)
@@ -104,8 +148,8 @@ define(["app/Bitmap"], function(Bitmap) {
   };
 
   Map.prototype.update = function(seconds) {
-    if (this.light > 0) this.light = Math.max(this.light - 10 * seconds, 0);
-    else if (Math.random() * 5 < seconds) this.light = 2;
+    //if (this.light > 0) this.light = Math.max(this.light - 10 * seconds, 0);
+    //else if (Math.random() * 5 < seconds) this.light = 2;
   };
 
   return Map;

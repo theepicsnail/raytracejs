@@ -15,16 +15,14 @@ define(["app/Bitmap"], function(Bitmap) {
   Player.prototype.walk = function(distance, map, sideStep) {
     sideStep = (sideStep | 0) * Math.PI/2;
 
-    var dx = Math.cos(this.direction+sideStep) * distance;
-    var dy = Math.sin(this.direction+sideStep) * distance;
-    if (map.get(this.x + dx, this.y) <= 0) this.x += dx;
-    if (map.get(this.x, this.y + dy) <= 0) this.y += dy;
+    var dir = this.direction + sideStep;
 
-    if (Math.floor(this.x) == 7  && Math.floor(this.y) ==7) {
-      if (Math.floor(this.x - dx) == 6) {
-        this.x -= 6;
-        this.y-=6;
-      }
+    var end = map.move(this.x, this.y, dir, distance);
+
+    this.x = end.x;
+    this.y = end.y;
+    if (!sideStep) {
+      this.direction = end.dir;
     }
     this.paces += distance;
   };
