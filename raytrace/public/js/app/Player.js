@@ -21,9 +21,7 @@ define(["app/Bitmap"], function(Bitmap) {
 
     this.x = end.x;
     this.y = end.y;
-    if (!sideStep) {
-      this.direction = end.dir;
-    }
+    this.direction = end.dir - sideStep;
     this.paces += distance;
   };
 
