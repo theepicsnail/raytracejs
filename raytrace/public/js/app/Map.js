@@ -53,8 +53,8 @@ define(["app/Bitmap", "app/Portal"], function(Bitmap, Portal) {
       "x              x",
       "x              x",
       "x              x",
-      "x     x x      x",
-      "x     x x      x",
+      "x     xxx      x",
+      "x       x      x",
       "x     xxx      x",
       "x              x",
       "x              x",
@@ -66,7 +66,7 @@ define(["app/Bitmap", "app/Portal"], function(Bitmap, Portal) {
       ];
     for (var i = 0 ; i < this.size ; i ++)
       for (var j = 0 ; j < this.size ; j ++) {
-        this.wallGrid[i*this.size + j] = data[j][i] !== ' ';
+        this.wallGrid[i*this.size + j] = data[i][j] !== ' ';
       }
   };
 
@@ -93,26 +93,12 @@ define(["app/Bitmap", "app/Portal"], function(Bitmap, Portal) {
         var end = this.portals[0].cross(nextStep.x, nextStep.y, dir, 0 );
         nextStep.x = end.x;
         nextStep.y = end.y;
-
-        //nextStep.x -= 6;
-        //nextStep.y -= 6;
         dx = Math.cos(end.dir);
         dy = Math.sin(end.dir);
         origin = nextStep;
         continue;
       }
 
-/*
-      if(Math.floor(nextStep.x) == 7 && Math.floor(nextStep.y) == 7)
-      {
-        if (nextStep.x == 7 && dx >0) {
-          nextStep.y -= 6;
-          nextStep.x -= 6;
-          origin = nextStep;
-          continue;
-        }
-      }
-*/
       result.push(origin);
 
       if (nextStep.distance > this.range)
