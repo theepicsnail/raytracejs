@@ -1,6 +1,5 @@
 define([], function() {
   function Controls() {
-    console.log("Controls");
     this.codes  = {
       65:'stepLeft',  // A
       68:'stepRight', // D
@@ -36,7 +35,6 @@ define([], function() {
 
   Controls.prototype.onKey = function(val, e) {
     var state = this.codes[e.keyCode];
-    console.log(e.keyCode);
     if (typeof state === 'undefined') return;
     this.states[state] = val;
     e.preventDefault && e.preventDefault();
