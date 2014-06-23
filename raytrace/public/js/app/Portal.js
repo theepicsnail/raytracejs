@@ -13,7 +13,20 @@ define([], function() {
   };
 
   Portal.prototype.rayEnters = function(x, y, dx, dy) {
-    return Math.floor(x) === 7 && Math.floor(y) === 7 && Math.floor(x - dx) === 6;
+    //x,y are the values AFTER moving.
+    var DOWN = 0;
+
+    var enter_x = 7;
+    var enter_y =8;
+    var enter_dir = DOWN;
+
+    switch(enter_dir) {
+      case DOWN:
+        return (Math.floor(x) === enter_x) && (Math.floor(y) === (enter_y + 1)) && (Math.floor(y-dy) === enter_y);
+
+    }
+    console.warn("Portal has invalid direction");
+    return false;
   };
 
   Portal.prototype.cross = function(x, y, dir, dist) {
