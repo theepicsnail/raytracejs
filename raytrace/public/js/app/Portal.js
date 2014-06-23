@@ -33,7 +33,7 @@ define([], function() {
     var delta_angle = 0;// +new Date()/2000;
     var cos = Math.cos(delta_angle), sin = Math.sin(delta_angle);
     var offset_x = (x%1)-0.5, offset_y = (y%1)-0.5;
-    var newX = 6 +  offset_x * cos + offset_y * -sin + 0.5;
+    var newX = 4 +  offset_x * cos + offset_y * -sin + 0.5;
     var newY = 7 +  offset_x * sin + offset_y * cos  + 0.5;
     ///newX += Math.sin( + new Date()/2000)-1;
     return {
