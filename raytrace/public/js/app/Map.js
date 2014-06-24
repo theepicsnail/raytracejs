@@ -1,4 +1,4 @@
-define(["app/Bitmap", "app/Portal"], function(Bitmap, Portal) {
+define(["app/Bitmap", "app/Portal", "app/Debug"], function(Bitmap, Portal, Debug) {
 //define(["app/Bitmap"], function(Bitmap) {
 
   function Map(size) {
@@ -9,8 +9,11 @@ define(["app/Bitmap", "app/Portal"], function(Bitmap, Portal) {
     this.wallTexture = new Bitmap('./assets/wall.png', 32, 32);
     this.light = 0;
     this.portals = [new Portal()];
-    this.portals[0].setEntrance(7, 7, 0);
-    this.portals[0].setExit(1, 1, 0);
+    this.portals[0].setEntrance(6, 7, Portal.LEFT);
+    //this.portals[0].setEntrance(8, 7, Portal.RIGHT);
+    //this.portals[0].setEntrance(7, 6, Portal.UP);
+    //this.portals[0].setEntrance(7, 8, Portal.DOWN);
+    this.portals[0].setExit(3, 3, Portal.RIGHT);
 
   }
 
@@ -53,11 +56,11 @@ define(["app/Bitmap", "app/Portal"], function(Bitmap, Portal) {
       "x              x",
       "x              x",
       "x              x",
-      "x     xxx      x",
-      "x       x      x",
       "x     x x      x",
+      "x              x",
       "x     x x      x",
-      "x      x       x",
+      "x              x",
+      "x              x",
       "x              x",
       "x              x",
       "x              x",
@@ -96,11 +99,14 @@ define(["app/Bitmap", "app/Portal"], function(Bitmap, Portal) {
         dx = Math.cos(end.dir);
         dy = Math.sin(end.dir);
         origin = nextStep;
+        origin.height = 3;
+        result.push(origin);
         continue;
       }
 
       result.push(origin);
-
+      if (origin.height > 0)
+        casting = false;
       if (nextStep.distance > this.range)
         casting = false;
       else
