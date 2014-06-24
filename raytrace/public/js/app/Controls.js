@@ -5,13 +5,13 @@ define([], function() {
       68:'stepRight', // D
       83:'backward',  // S
       87:'forward',   // W
-
+      32:'space',     // space
       37: 'left',
       39: 'right',
       38: 'forward',
       40: 'backward'
     };
-    this.states = { 'left': false, 'right': false, 'forward': false, 'backward': false, 'stepLeft':false, 'stepRight':false };
+    this.states = { 'space':false, 'left': false, 'right': false, 'forward': false, 'backward': false, 'stepLeft':false, 'stepRight':false };
     document.addEventListener('keydown', this.onKey.bind(this, true), false);
     document.addEventListener('keyup', this.onKey.bind(this, false), false);
     document.addEventListener('touchstart', this.onTouch.bind(this), false);
@@ -28,7 +28,7 @@ define([], function() {
   };
 
   Controls.prototype.onTouchEnd = function(e) {
-    this.states = { 'left': false, 'right': false, 'forward': false, 'backward': false, 'stepLeft':false, 'stepRight': false};
+    this.states = { 'space':false,'left': false, 'right': false, 'forward': false, 'backward': false, 'stepLeft':false, 'stepRight': false};
     e.preventDefault();
     e.stopPropagation();
   };

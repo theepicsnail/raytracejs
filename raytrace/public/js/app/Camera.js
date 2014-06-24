@@ -1,4 +1,4 @@
-define([], function() {
+define(["app/Debug", "app/Controls"], function(Debug, Controls) {
 
   CIRCLE = Math.PI*2;
 
@@ -47,11 +47,18 @@ define([], function() {
 
   Camera.prototype.drawColumns = function(player, map) {
     this.ctx.save();
+    var debug_column = Math.floor(this.resolution/2);
     for (var column = 0; column < this.resolution; column++) {
+      if(column == debug_column && Controls.states.space)
+        Debug.enabled = true;
+
       var x = column / this.resolution - 0.5;
       var angle = Math.atan2(x, this.focalLength);
       var ray = map.cast(player, player.direction + angle, this.range);
       this.drawColumn(column, ray, angle, map);
+      if(Debug.enabled)
+        console.log(ray)
+      Debug.enabled = false;
     }
     this.ctx.restore();
   };
@@ -83,7 +90,17 @@ define([], function() {
         var wall = this.project(step.height, angle, step.distance);
 
         ctx.globalAlpha = 1;
-        ctx.drawImage(texture.image, textureX, 0, 1, texture.height, left, wall.top, width, wall.height);
+        if (Debug.enabled) {
+            this.ctx.strokeStyle = '#ff0000';
+            this.ctx.beginPath();
+            this.ctx.moveTo(left, wall.top);
+            this.ctx.lineTo(left, wall.top + wall.height);
+            this.ctx.stroke();
+        } else {
+           ctx.drawImage(texture.image,
+                textureX,         0,     1,   texture.height,
+                left,  wall.top, width,      wall.height);
+        }
 
         //ctx.fillStyle = '#000000';
         //ctx.globalAlpha = Math.max((step.distance + step.shading) / this.lightRange - map.light, 0);
