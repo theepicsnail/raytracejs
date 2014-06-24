@@ -1,40 +1,61 @@
 define([], function() {
 
-
   function Portal() {
   }
 
-  Portal.prototype.setEntrance = function(x, y, dir) {
+  Portal.UP = 0;
+  Portal.RIGHT = 1;
+  Portal.DOWN = 2;
+  Portal.LEFT = 3;
 
+  Portal.prototype.setEntrance = function(x, y, dir) {
+    this.enter_x = x;
+    this.enter_y = y;
+    this.enter_dir = dir;
   };
 
   Portal.prototype.setExit = function(x, y, dir) {
-
+    this.exit_x = x;
+    this.exit_y = y;
+    this.exit_dir = dir;
   };
 
   Portal.prototype.rayEnters = function(x, y, dx, dy) {
     //x,y are the values AFTER moving.
-    var DOWN = 0;
 
-    var enter_x = 7;
-    var enter_y =8;
-    var enter_dir = DOWN;
 
-    switch(enter_dir) {
-      case DOWN:
-        return (Math.floor(x) === enter_x) && (Math.floor(y) === (enter_y + 1)) && (Math.floor(y-dy) === enter_y);
-
+    switch(this.enter_dir) {
+      case Portal.DOWN:
+        return (
+        (Math.floor(x) === this.enter_x) &&
+        (Math.floor(y) === (this.enter_y + 1)) &&
+        (Math.floor(y-dy) === this.enter_y) &&
+        true);
+      case Portal.UP:
+        return (
+          (Math.floor(x) === this.enter_x) &&
+        (Math.ceil(y) === (this.enter_y)) &&
+        (Math.floor(y-dy) === (this.enter_y))
+        );
+      case Portal.RIGHT:
+        return (Math.floor(y) === this.enter_y) &&
+        (Math.floor(x) === (this.enter_x + 1)) &&
+        (Math.floor(x-dx) === this.enter_x);
+      case Portal.LEFT:
+        return (Math.floor(y) === this.enter_y) &&
+        (Math.ceil(x) === (this.enter_x)) &&
+        (Math.floor(x-dx) === (this.enter_x));
     }
     console.warn("Portal has invalid direction");
     return false;
   };
 
   Portal.prototype.cross = function(x, y, dir, dist) {
-    var delta_angle = 0;// +new Date()/2000;
+    var delta_angle = (this.exit_dir - this.enter_dir) * Math.PI/2;
     var cos = Math.cos(delta_angle), sin = Math.sin(delta_angle);
     var offset_x = (x%1)-0.5, offset_y = (y%1)-0.5;
-    var newX = 4 +  offset_x * cos + offset_y * -sin + 0.5;
-    var newY = 7 +  offset_x * sin + offset_y * cos  + 0.5;
+    var newX = this.exit_x +  offset_x * cos + offset_y * -sin + 0.5;
+    var newY = this.exit_y +  offset_x * sin + offset_y * cos  + 0.5;
     ///newX += Math.sin( + new Date()/2000)-1;
     return {
       x: newX,
