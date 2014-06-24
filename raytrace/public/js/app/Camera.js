@@ -14,8 +14,9 @@ define(["app/Debug", "app/Controls"], function(Debug, Controls) {
     canvas.width = this.width
     canvas.height = this.height
 
-    this.resolution = resolution;
-    this.spacing = this.width / resolution;
+    this.resolution = this.width/2;// resolution;
+    this.spacing = this.width / this.resolution;
+    console.log(this.spacing);
     this.focalLength = focalLength || 0.8;
     this.range = 25;
     this.lightRange = 5;
@@ -85,9 +86,10 @@ define(["app/Debug", "app/Controls"], function(Debug, Controls) {
       //var rainDrops = Math.pow(Math.random(), 3) * s;
       //var rain = (rainDrops > 0) && this.project(0.1, angle, step.distance);
 
-      if (s === hit) {
+      if (step.height > 0) {
+        var texture = map.getTexture(step.height);
         var textureX = Math.floor(texture.width * step.offset);
-        var wall = this.project(step.height, angle, step.distance);
+        var wall = this.project(1/*step.height*/, angle, step.distance);
 
         ctx.globalAlpha = 1;
         if (Debug.enabled) {

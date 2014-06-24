@@ -7,6 +7,7 @@ define(["app/Bitmap", "app/Portal", "app/Debug"], function(Bitmap, Portal, Debug
     this.skybox = new Bitmap('./assets/deathvalley_panorama.jpg', 2000, 750);
     //this.wallTexture = new Bitmap('./assets/wall_texture.jpg', 1024, 1024);
     this.wallTexture = new Bitmap('./assets/wall.png', 32, 32);
+    this.portalTexture = new Bitmap('./assets/portal_blue.png', 32, 32);
     this.light = 0;
     this.portals = [new Portal()];
     this.portals[0].setEntrance(6, 7, Portal.LEFT);
@@ -16,7 +17,13 @@ define(["app/Bitmap", "app/Portal", "app/Debug"], function(Bitmap, Portal, Debug
     this.portals[0].setExit(3, 3, Portal.RIGHT);
 
   }
-
+  Map.prototype.getTexture = function(id) {
+    if(id == -1) return undefined;
+    if(id == 1) return this.wallTexture;
+    if(id == 2) return this.portalTexture;
+    console.log('invalid texture id:', id);
+    return this.wallTexture;
+  }
   Map.prototype.move = function(x, y, dir, dist) {
     // returns {x, y, dir}
 
@@ -99,14 +106,14 @@ define(["app/Bitmap", "app/Portal", "app/Debug"], function(Bitmap, Portal, Debug
         dx = Math.cos(end.dir);
         dy = Math.sin(end.dir);
         origin = nextStep;
-        origin.height = 3;
+        origin.height = 2;
         result.push(origin);
         continue;
       }
 
       result.push(origin);
-      if (origin.height > 0)
-        casting = false;
+      //if (origin.height > 0)
+      //  casting = false;
       if (nextStep.distance > this.range)
         casting = false;
       else
