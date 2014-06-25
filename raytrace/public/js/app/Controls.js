@@ -22,9 +22,21 @@ define([], function() {
   Controls.prototype.onTouch = function(e) {
     var t = e.touches[0];
     this.onTouchEnd(e);
-    if (t.pageY < window.innerHeight * 0.5) this.onKey(true, { keyCode: 38 });
-    else if (t.pageX < window.innerWidth * 0.5) this.onKey(true, { keyCode: 37 });
-    else if (t.pageY > window.innerWidth * 0.5) this.onKey(true, { keyCode: 39 });
+    var x = t.pageX/window.innerWidth;
+    var y = t.pageY/window.innerHeight;
+    var topRight = y<x;
+    var topLeft = 1 - x - y > 0;
+    if (topRight)
+      if (topLeft)
+        this.onKey(true, { keyCode: 38 });  // top = forward
+      else
+        this.onKey(true, { keyCode: 39 }); // right
+    else // A S
+      if (topLeft) // A
+        this.onKey(true, { keyCode: 37 });
+      else // S
+        this.onKey(true, { keyCode: 40 });
+
   };
 
   Controls.prototype.onTouchEnd = function(e) {
