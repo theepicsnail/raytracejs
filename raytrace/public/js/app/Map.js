@@ -111,7 +111,9 @@ define(["app/Bitmap", "app/Portal", "app/Debug"], function(Bitmap, Portal, Debug
         continue;
       }
 
-      result.push(origin);
+      if(nextStep.height > 0)
+        result.push(nextStep);
+      //result.push(origin);
       //if (origin.height > 0)
       //  casting = false;
       if (nextStep.distance > this.range)
