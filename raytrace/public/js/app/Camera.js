@@ -6,13 +6,14 @@ define(["app/Debug", "app/Controls"], function(Debug, Controls) {
     this.ctx = canvas.getContext('2d');
     this.width = canvas.width = window.innerWidth;
     this.height = canvas.height = window.innerHeight-50;
-    if ( this.width / 4 > this.height / 3 )
-    this.width = (this.height/3) * 4;
-    else
-    this.height = (this.width/4) * 3;
+    if ( this.width / 4 > this.height / 3 ) {
+      this.width = (this.height/3) * 4;
+    } else {
+      this.height = (this.width/4) * 3;
+    }
 
-    canvas.width = this.width
-    canvas.height = this.height
+    canvas.width = this.width;
+    canvas.height = this.height;
 
     this.resolution = this.width/2;// resolution;
     this.spacing = this.width / this.resolution;
@@ -33,7 +34,7 @@ define(["app/Debug", "app/Controls"], function(Debug, Controls) {
     var width = sky.width * (this.height / sky.height) * 2;
     var left = (direction / CIRCLE) * -width;
 
-    this.ctx.save();
+    //this.ctx.save();
     this.ctx.drawImage(sky.image, left, 0, width, this.height);
     if (left < width - this.width) {
       this.ctx.drawImage(sky.image, left + width, 0, width, this.height);
@@ -43,20 +44,20 @@ define(["app/Debug", "app/Controls"], function(Debug, Controls) {
       this.ctx.globalAlpha = ambient * 0.1;
     //  this.ctx.fillRect(0, this.height * 0.5, this.width, this.height * 0.5);
     }
-    this.ctx.restore();
+    //this.ctx.restore();
   };
 
   Camera.prototype.drawColumns = function(player, map) {
-    this.ctx.save();
-    for (var column = 0; column < this.resolution; column++) {
-      Debug.column = (column == Math.floor(this.resolution/2)) && Debug.enabled;
+    var column = 0;
+
+    for (column = 0; column < this.resolution; column++) {
+      Debug.column = (column === Math.floor(this.resolution/2)) && Debug.enabled;
 
       var x = column / this.resolution - 0.5;
       var angle = Math.atan2(x, this.focalLength);
       var ray = map.cast(player, player.direction + angle, this.range);
       this.drawColumn(column, ray, angle, map);
     }
-    this.ctx.restore();
   };
 
   Camera.prototype.drawWeapon = function(weapon, paces) {
@@ -69,14 +70,11 @@ define(["app/Debug", "app/Controls"], function(Debug, Controls) {
 
   Camera.prototype.drawColumn = function(column, ray, angle, map) {
     var ctx = this.ctx;
-    var texture = map.wallTexture;
     var left = Math.floor(column * this.spacing);
     var width = Math.ceil(this.spacing);
-    var hit = -1;
+    var s;
 
-    while (++hit < ray.length && ray[hit].height <= 0);
-
-    for (var s = ray.length - 1; s >= 0; s--) {
+    for (s = ray.length - 1; s >= 0; s--) {
       var step = ray[s];
       //var rainDrops = Math.pow(Math.random(), 3) * s;
       //var rain = (rainDrops > 0) && this.project(0.1, angle, step.distance);
