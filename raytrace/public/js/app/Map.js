@@ -10,11 +10,14 @@ define(["app/Bitmap", "app/Portal", "app/Debug"], function(Bitmap, Portal, Debug
     this.portalTexture = new Bitmap('./assets/portal_blue.png', 32, 32);
     this.light = 0;
     this.portals = [new Portal()];
+    //Enter the portal by going left at 6,7
     this.portals[0].setEntrance(6, 7, Portal.LEFT);
     //this.portals[0].setEntrance(8, 7, Portal.RIGHT);
     //this.portals[0].setEntrance(7, 6, Portal.UP);
     //this.portals[0].setEntrance(7, 8, Portal.DOWN);
-    this.portals[0].setExit(3, 3, Portal.RIGHT);
+
+    //Exit the portal by going into 5,6 from the left
+    this.portals[0].setExit(6, 7, Portal.RIGHT);
 
   }
   Map.prototype.getTexture = function(id) {
@@ -24,27 +27,6 @@ define(["app/Bitmap", "app/Portal", "app/Debug"], function(Bitmap, Portal, Debug
     console.log('invalid texture id:', id);
     return this.wallTexture;
   }
-  Map.prototype.move = function(x, y, dir, dist) {
-    // returns {x, y, dir}
-
-    var dx = Math.cos(dir) * dist;
-    var dy = Math.sin(dir) * dist;
-
-
-    if (this.get(x + dx, y) <= 0) x += dx;
-    if (this.get(x, y + dy) <= 0) y += dy;
-
-    if(this.portals[0].rayEnters(x, y, dx, dy))
-    {
-      return this.portals[0].cross(x, y, dir, dist);
-    }
-
-
-    return {
-      x:x, y:y, dir: dir
-    };
-  };
-
   Map.prototype.get = function(x, y) {
     x = Math.floor(x);
     y = Math.floor(y);
@@ -59,18 +41,18 @@ define(["app/Bitmap", "app/Portal", "app/Debug"], function(Bitmap, Portal, Debug
     var data = [
       "xxxxxxxxxxxxxxxx",
       "x              x",
+      "x x          x x",
       "x              x",
+      "x   x      x   x",
       "x              x",
+      "x    xxxxx     x",
+      "x   x          x",
+      "x    xx        x",
+      "x      xxx     x",
       "x              x",
+      "x   x      x   x",
       "x              x",
-      "x     x x      x",
-      "x              x",
-      "x     x x      x",
-      "x              x",
-      "x              x",
-      "x              x",
-      "x              x",
-      "x              x",
+      "x x          x x",
       "x              x",
       "xxxxxxxxxxxxxxxx",
       ];
@@ -85,6 +67,31 @@ define(["app/Bitmap", "app/Portal", "app/Debug"], function(Bitmap, Portal, Debug
     var cos = Math.cos(angle);
     this.range = range;
     return this.ray({ x: point.x, y: point.y, height: 0, distance: 0 }, angle, cos, sin);
+  };
+
+  Map.prototype.move = function(x, y, dir, dist) {
+    // returns {x, y, dir}
+
+    var dx = Math.cos(dir) * dist;
+    var dy = Math.sin(dir) * dist;
+
+    x += dx;
+    y += dy;
+    if(this.portals[0].rayEnters(x, y, dx, dy))
+    {
+      portal_result = this.portals[0].cross(x, y, dir, dist);
+      //if(Debug.enabled)
+      console.log("Player crossed", x, y, portal_result);
+      return portal_result
+    }
+
+    if (this.get(x + dx, y) > 0) x -= dx;
+    if (this.get(x, y + dy) > 0) y -= dy;
+
+
+    return {
+      x:x, y:y, dir: dir
+    };
   };
 
   Map.prototype.ray = function(origin, dir, dx, dy) {
