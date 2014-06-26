@@ -101,6 +101,8 @@ define(["app/Bitmap", "app/Portal", "app/Debug"], function(Bitmap, Portal, Debug
       if(this.portals[0].rayEnters(nextStep.x, nextStep.y, dx, dy))
       {
         var end = this.portals[0].cross(nextStep.x, nextStep.y, dir, 0 );
+        if (Debug.column)
+          console.log("Ray crossed", nextStep.x, nextStep.y, end)
         nextStep.x = end.x;
         nextStep.y = end.y;
         dx = Math.cos(end.dir);
@@ -120,6 +122,9 @@ define(["app/Bitmap", "app/Portal", "app/Debug"], function(Bitmap, Portal, Debug
         casting = false;
       else
         origin = nextStep;
+    }
+    if (Debug.column) {
+      console.log(result);
     }
     return result;
   };

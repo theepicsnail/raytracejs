@@ -48,18 +48,13 @@ define(["app/Debug", "app/Controls"], function(Debug, Controls) {
 
   Camera.prototype.drawColumns = function(player, map) {
     this.ctx.save();
-    var debug_column = Math.floor(this.resolution/2);
     for (var column = 0; column < this.resolution; column++) {
-      if(column == debug_column && Controls.states.space)
-        Debug.enabled = true;
+      Debug.column = (column == Math.floor(this.resolution/2)) && Debug.enabled;
 
       var x = column / this.resolution - 0.5;
       var angle = Math.atan2(x, this.focalLength);
       var ray = map.cast(player, player.direction + angle, this.range);
       this.drawColumn(column, ray, angle, map);
-      if(Debug.enabled)
-        console.log(ray)
-      Debug.enabled = false;
     }
     this.ctx.restore();
   };
@@ -92,7 +87,7 @@ define(["app/Debug", "app/Controls"], function(Debug, Controls) {
         var wall = this.project(1/*step.height*/, angle, step.distance);
 
         ctx.globalAlpha = 1;
-        if (Debug.enabled) {
+        if (Debug.column) {
             this.ctx.strokeStyle = '#ff0000';
             this.ctx.beginPath();
             this.ctx.moveTo(left, wall.top);

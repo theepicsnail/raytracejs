@@ -1,5 +1,5 @@
-define(["promise", "app/Player", "app/Map", "app/Camera", "app/Controls", "app/GameLoop"],
-function(Promise,   Player,       Map,       Camera,      Controls,        GameLoop) {
+define(["promise", "app/Player", "app/Map", "app/Camera", "app/Controls", "app/GameLoop", "app/Debug"],
+function(Promise,   Player,       Map,       Camera,      Controls,        GameLoop,       Debug) {
 
   var width, height;
   var canvas;
@@ -8,14 +8,23 @@ function(Promise,   Player,       Map,       Camera,      Controls,        GameL
   // GameLoop content
   var game;
   function start() {
-    var player = new Player(1.3, 1.2, Math.PI * 0.3);
+    var player = new Player(9, 7.5, 3.14);
     var map = new Map(16);
     var camera = new Camera(canvas, 320, 0.8);
 
     function update(dt) {
+      if(Controls.states.space) {
+        Debug.enabled = true;
+        console.group(dt);
+      }
       map.update(dt);
       player.update(Controls.states, map, dt);
       camera.render(player, map);
+
+      if(Debug.enabled) {
+        Debug.enabled = false;
+        console.groupEnd();
+      }
     }
     map.randomize();
     (new GameLoop()).start(update);

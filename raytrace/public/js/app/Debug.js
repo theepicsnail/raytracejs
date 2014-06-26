@@ -1,1 +1,4 @@
-define([], function() { return {enabled:false}; });
+define([], function() { return {
+  enabled:false,
+  column: false
+}; });

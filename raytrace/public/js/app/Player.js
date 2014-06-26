@@ -1,4 +1,4 @@
-define(["app/Bitmap"], function(Bitmap) {
+define(["app/Bitmap", "app/Debug"], function(Bitmap, Debug) {
 
   function Player(x, y, direction) {
     this.x = x;
@@ -33,6 +33,9 @@ define(["app/Bitmap"], function(Bitmap) {
 
     if (controls.stepLeft) this.walk(3 * seconds, map, -1);
     if (controls.stepRight) this.walk(3 * seconds, map, 1);
+
+    if (Debug.enabled)
+      console.log(this);
   };
 
   return Player;
