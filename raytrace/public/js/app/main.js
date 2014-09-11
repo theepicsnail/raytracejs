@@ -8,7 +8,7 @@ function(Promise,   Player,       Map,       Camera,      Controls,        GameL
   // GameLoop content
   var game;
   function start() {
-    var player = new Player(9, 7.5, 3.14);
+    var player = new Player(1.5, 1.5, 0);
     var map = new Map(16);
     var camera = new Camera(canvas, 320, 0.8);
 
