@@ -74,7 +74,8 @@ define(["app/Debug", "app/Controls"], function(Debug, Controls) {
     var width = Math.ceil(this.spacing);
     var s;
 
-    for (s = ray.length - 1; s >= 0; s--) {
+    for (s = ray.length - 1; s >= 0; s--) { // Draw all layers (back to front)
+//    for(s = 0; s < 1; s ++) { // Draw only the frontmost layer
       var step = ray[s];
       //var rainDrops = Math.pow(Math.random(), 3) * s;
       //var rain = (rainDrops > 0) && this.project(0.1, angle, step.distance);
@@ -85,12 +86,26 @@ define(["app/Debug", "app/Controls"], function(Debug, Controls) {
         var wall = this.project(1/*step.height*/, angle, step.distance);
 
         ctx.globalAlpha = 1;
-        if (Debug.column) {
-            this.ctx.strokeStyle = '#ff0000';
+        if (Debug.enabled) {
+          if (Debug.column) {
+              this.ctx.strokeStyle = '#0000ff';
+              this.ctx.beginPath();
+              this.ctx.moveTo(left-wall.height, wall.top);
+              this.ctx.lineTo(left, wall.top);
+              this.ctx.moveTo(left-wall.height, wall.top + wall.height);
+              this.ctx.lineTo(left, wall.top + wall.height);
+              this.ctx.stroke();
+
+              this.ctx.strokeStyle = '#000000';
+            } else
+              this.ctx.strokeStyle = '#ff0000';
+
             this.ctx.beginPath();
             this.ctx.moveTo(left, wall.top);
             this.ctx.lineTo(left, wall.top + wall.height);
             this.ctx.stroke();
+
+
         } else {
            ctx.drawImage(texture.image,
                 textureX,         0,     1,   texture.height,
