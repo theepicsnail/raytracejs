@@ -23,7 +23,7 @@ define(["app/Bitmap", "app/Portal", "app/Debug"], function(Bitmap, Portal, Debug
     //this.portals[0].setExit(6, 7, Portal.RIGHT);
 
     this.portals.push(new Portal()
-      .from(2, 1, Portal.RIGHT)
+      .from(3, 1, Portal.RIGHT)
       .to(12, 1, Portal.RIGHT));
   }
 
@@ -48,17 +48,17 @@ define(["app/Bitmap", "app/Portal", "app/Debug"], function(Bitmap, Portal, Debug
     //    }
     var data = [
       "xxxxxxxxxxxxxxxx",
-      "x   x      x   x",
-      "x  x        x  x",
-      "xx            xx",
+      "x              x",
+      "x  xxxxxxxxxx  x",
       "x              x",
       "x              x",
       "x              x",
+      "x        x     x",
+      "x         x    x",
       "x              x",
       "x              x",
-      "x              x",
-      "x              x",
-      "x              x",
+      "x     x        x",
+      "x    x         x",
       "xx            xx",
       "x              x",
       "x  x        x  x",
@@ -123,7 +123,7 @@ define(["app/Bitmap", "app/Portal", "app/Debug"], function(Bitmap, Portal, Debug
         dx = Math.cos(end.dir);
         dy = Math.sin(end.dir);
         origin = nextStep;
-        origin.height = 2;
+        origin.height = 0;
         result.push(origin);
         continue;
       }
