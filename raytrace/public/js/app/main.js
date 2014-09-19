@@ -12,7 +12,13 @@ function(Promise,   Player,       Map,       Camera,      Controls,        GameL
     var map = new Map(16);
     var camera = new Camera(canvas, 320, 0.8);
 
+    var frames = 0;
+    setInterval(function() {
+      console.log(frames);
+      frames = 0;
+    }, 1000);
     function update(dt) {
+      frames ++;
       if(Controls.states.space) {
         Debug.enabled = true;
         console.group(dt);
@@ -55,15 +61,12 @@ function(Promise,   Player,       Map,       Camera,      Controls,        GameL
   }
 
   return {
-    init: function() {
-      return new Promise(function(accept, reject){
+    start:function() {
         canvas = document.createElement("canvas");
         ctx = canvas.getContext("2d");
         document.getElementById("content").appendChild(canvas);
         addListeners();
-        accept();
-      });
-    },
-    start:start
+        start();
+    }
   };
 });
