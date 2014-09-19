@@ -12,12 +12,8 @@ requirejs.config({
   }
 });
 
-require(["loadscreen", "app/resources", "app/main"],
-function( loadscreen,       resources,       main) {
-  loadscreen.start();
-  resources.load().then(main.init).then(function() {
-    loadscreen.stop();
-    main.start();
-  });
+require(["app/main"],
+function(main) {
+  main.start();
 });
 
