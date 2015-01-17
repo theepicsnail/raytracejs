@@ -23,8 +23,13 @@ define(["app/Bitmap", "app/Portal", "app/Debug"], function(Bitmap, Portal, Debug
     //this.portals[0].setExit(6, 7, Portal.RIGHT);
 
     this.portals.push(new Portal()
-      .from(3, 1, Portal.RIGHT)
-      .to(12, 1, Portal.RIGHT));
+      .from(1, 1, Portal.UP) // exiting 1,1 going up means you come
+      .to(0, 1, Portal.RIGHT) // out from 0,1's right wall
+      );
+
+    this.portals.push(new Portal()
+      .from(1, 1, Portal.LEFT)
+      .to(1, 0, Portal.DOWN));
   }
 
   Map.prototype.getTexture = function(id) {
@@ -49,7 +54,7 @@ define(["app/Bitmap", "app/Portal", "app/Debug"], function(Bitmap, Portal, Debug
     var data = [
       "xxxxxxxxxxxxxxxx",
       "x              x",
-      "x  xxxxxxxxxx  x",
+      "x   xxxxxxxxxx x",
       "x              x",
       "x              x",
       "x              x",
@@ -85,9 +90,10 @@ define(["app/Bitmap", "app/Portal", "app/Debug"], function(Bitmap, Portal, Debug
 
     x += dx;
     y += dy;
-    if(this.portals[0].rayEnters(x, y, dx, dy))
+    for(var i in this.portals)
+    if(this.portals[i].rayEnters(x, y, dx, dy))
     {
-      portal_result = this.portals[0].cross(x, y, dir, dist);
+      portal_result = this.portals[i].cross(x, y, dir, dist);
       //if(Debug.enabled)
       console.log("Player crossed", x, y, portal_result);
       return portal_result
@@ -112,10 +118,11 @@ define(["app/Bitmap", "app/Portal", "app/Debug"], function(Bitmap, Portal, Debug
         this.inspect(stepX, dx,dy,1, 0, origin.distance, stepX.y)
         : this.inspect(stepY, dx,dy,0, 1, origin.distance, stepY.x);
 
-
-      if(this.portals[0].rayEnters(nextStep.x, nextStep.y, dx, dy))
+      var portaled = false;
+      for(var i in this.portals)
+      if(this.portals[i].rayEnters(nextStep.x, nextStep.y, dx, dy))
       {
-        var end = this.portals[0].cross(nextStep.x, nextStep.y, dir, 0 );
+        var end = this.portals[i].cross(nextStep.x, nextStep.y, dir, 0 );
         if (Debug.column)
           console.log("Ray crossed", nextStep.x, nextStep.y, end)
         nextStep.x = end.x;
@@ -125,8 +132,11 @@ define(["app/Bitmap", "app/Portal", "app/Debug"], function(Bitmap, Portal, Debug
         origin = nextStep;
         origin.height = 0;
         result.push(origin);
-        continue;
+        portaled = true;
       }
+      //if (portaled) {
+      //  continue;
+      //}
 
       if(nextStep.height > 0)
         result.push(nextStep);
