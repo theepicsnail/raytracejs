@@ -23,13 +23,17 @@ define(["app/Bitmap", "app/Portal", "app/Debug"], function(Bitmap, Portal, Debug
     //this.portals[0].setExit(6, 7, Portal.RIGHT);
 
     this.portals.push(new Portal()
-      .from(1, 1, Portal.UP) // exiting 1,1 going up means you come
-      .to(0, 1, Portal.RIGHT) // out from 0,1's right wall
+      .from(2, 1, Portal.RIGHT) // exiting 1,1 going up means you come
+      .to(1, 1, Portal.RIGHT) // out from 0,1's right wall
       );
 
     this.portals.push(new Portal()
-      .from(1, 1, Portal.LEFT)
-      .to(1, 0, Portal.DOWN));
+      .from(5, 5, Portal.RIGHT)
+      .to(6,7,Portal.RIGHT));
+
+    //this.portals.push(new Portal()
+    //  .from(1, 1, Portal.LEFT)
+    //  .to(1, 0, Portal.DOWN));
   }
 
   Map.prototype.getTexture = function(id) {
@@ -54,19 +58,19 @@ define(["app/Bitmap", "app/Portal", "app/Debug"], function(Bitmap, Portal, Debug
     var data = [
       "xxxxxxxxxxxxxxxx",
       "x              x",
-      "x   xxxxxxxxxx x",
+      "x xxxxxxxxxxxx x",
       "x              x",
-      "x              x",
-      "x              x",
-      "x        x     x",
-      "x         x    x",
-      "x              x",
-      "x              x",
-      "x     x        x",
+      "x    xxx       x",
+      "x      x       x",
+      "x    xxx       x",
       "x    x         x",
-      "xx            xx",
+      "x    xxx       x",
       "x              x",
-      "x  x        x  x",
+      "x              x",
+      "x              x",
+      "x              x",
+      "x xxxxxxxxxxx  x",
+      "x              x",
       "xxxxxxxxxxxxxxxx",
       ];
     for (var i = 0 ; i < this.size ; i ++)
